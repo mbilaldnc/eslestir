@@ -14,7 +14,7 @@ app.get('/', (req, res) => {
 	res.sendFile('index.html');
 });
 
-app.get('/all', (req, res) => {
+app.get('/names', (req, res) => {
 	db.find({}, (err, docs) => {
 		if (err) {
 			console.log(err);
@@ -23,12 +23,27 @@ app.get('/all', (req, res) => {
 	});
 });
 
-app.post('/new', (req, res) => {
+app.get('/names/A', (req, res) => {
+	db.find({ group: 'A' }, (err, docs) => {
+		if (err) {
+			console.log(err);
+		}
+		res.json(docs);
+	});
+});
+
+app.get('/names/B', (req, res) => {
+	db.find({ group: 'B' }, (err, docs) => {
+		if (err) {
+			console.log(err);
+		}
+		res.json(docs);
+	});
+});
+
+app.post('/names', (req, res) => {
 	var data = req.body;
-	var doc = {
-		name: data.name
-	};
-	db.insert(doc, (err, newDoc) => {
+	db.insert(data, (err, newDoc) => {
 		if (err) {
 			console.log(err);
 		}
@@ -36,7 +51,7 @@ app.post('/new', (req, res) => {
 	});
 });
 
-app.get('/all/:id', (req, res) => {
+app.get('/name/:id', (req, res) => {
 	db.findOne({ _id: req.params.id }, (err, found) => {
 		if (err) {
 			console.log(err);
@@ -45,12 +60,21 @@ app.get('/all/:id', (req, res) => {
 	});
 });
 
-app.post('/delete/:id', (req, res) => {
+app.post('/name/delete/:id', (req, res) => {
 	db.remove({ _id: req.params.id }, {}, function(err, numRemoved) {
 		if (err) {
 			console.log(err);
 		}
 		res.send('Veri başarıyla silindi!');
+	});
+});
+
+app.post('/name/update/:id', (req, res) => {
+	db.update({ _id: req.params.id }, { $set: req.body }, {}, function(err, numRemoved) {
+		if (err) {
+			console.log(err);
+		}
+		res.send('Veri başarıyla güncellendi!');
 	});
 });
 
